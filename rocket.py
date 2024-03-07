@@ -71,10 +71,6 @@ class Rocket(pygame.sprite.Sprite):
            self.rect.x -= 5
         elif keys[pygame.K_d]:
            self.rect.x += 5
-        elif keys[pygame.K_w] and self.state_foguete == 3:
-           self.rect.y -= 5
-        elif keys[pygame.K_s] and self.state_foguete == 3:
-           self.rect.y += 5
 
         # limites de Tela 
         if self.rect.x < 0:
