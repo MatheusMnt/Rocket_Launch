@@ -1,12 +1,13 @@
 from typing import Any
 import pygame
-NUM_SWITCH = 10
+
+NUM_SWITCH = 18
 NUM_SWITCH_STATE_1 = 0
 NUM_SWITCH_STATE_2 = 1
 NUM_SWITCH_STATE_3 = 2
 
 INITIAL_X = 370
-INITIAL_Y = 210
+INITIAL_Y = 150
 
 class Rocket(pygame.sprite.Sprite):
 
@@ -19,17 +20,6 @@ class Rocket(pygame.sprite.Sprite):
         self.switchs = [True]*NUM_SWITCH
         self.state_foguete = 0
         self.status = True
-
-    # def check_rocket_version(self, keys):
-    #     if keys[pygame.K_SPACE] & self.switchs[1] and (not self.switchs[2]) and (not self.switchs[3]):
-    #         self.state_foguete = 1
-    #         self.set_foguete(self.state_foguete)
-    #     elif keys[pygame.K_SPACE] & self.switchs[1] and (self.switchs[2]) and (not self.switchs[3]):
-    #         self.state_foguete = 2
-    #         self.set_foguete(self.state_foguete)
-    #     elif keys[pygame.K_SPACE] & self.switchs[1] & self.switchs[2] & self.switchs[3]:
-    #         self.state_foguete = 3
-    #         self.set_foguete(self.state_foguete)
 
     def set_foguete(self):
         self.check_switch()      
@@ -44,14 +34,14 @@ class Rocket(pygame.sprite.Sprite):
     def check_switch(self):
 
         primeira_ocorrencia_True = None
-        print(self.switchs)
+        #print(self.switchs)
 
         for i in range(len(self.switchs)):
             if self.switchs[i]:
                 primeira_ocorrencia_True = i - 1
                 break
 
-        print(primeira_ocorrencia_True)       
+        #print(primeira_ocorrencia_True)       
         if primeira_ocorrencia_True == NUM_SWITCH_STATE_1:
             self.state_foguete = 1           
         elif primeira_ocorrencia_True == NUM_SWITCH_STATE_2:
@@ -86,6 +76,7 @@ class Rocket(pygame.sprite.Sprite):
             self.switchs[1] = False
         elif keys[pygame.K_3]:
             self.switchs[2] = False
+
 
         if keys[pygame.K_BACKSPACE]:
             self.set_foguete()
