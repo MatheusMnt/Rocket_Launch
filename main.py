@@ -68,7 +68,7 @@ def draw_circle(angulo):
 
 #desenha contagem Regressiva
 def contagem_regressiva():
-    for i in range(10, 0, -1):
+    for i in range(3, 0, -1):
         angulo = i * 36
         draw()
         draw_circle(angulo)
