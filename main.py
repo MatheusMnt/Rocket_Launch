@@ -3,93 +3,23 @@ import pygame
 import random
 import sys
 
+from background import SIZE_WINDOW_X, WHITE, contagem_regressiva, draw, draw_fuel, draw_score, draw_stars, menu, update_stars, setDisplay
 from rocket import Rocket
-#from background import Background
 from trash import LixoEspacial
 from gameOver import GameOver
 
-SIZE_WINDOW_X = 840
-SIZE_WINDOW_Y = 480
-FONTE_DEFAULT = "Fonts/GamegirlClassic.ttf"
-BRANCO = (255, 255, 255)
-MIDNIGHT_BLUE = (25, 25, 112)
-FPS = 60
-
-clock = pygame.time.Clock()
-
-pygame.init()
- 
-display = pygame.display.set_mode([SIZE_WINDOW_X, SIZE_WINDOW_Y])
-pygame.display.set_caption("Rocket Launch")
-drawGroup = pygame.sprite.Group() 
-rocket = Rocket(drawGroup)
-trash_group = pygame.sprite.Group()
-title_font = pygame.font.Font(FONTE_DEFAULT, 50)
-fonte = pygame.font.Font(FONTE_DEFAULT, 25)
-fonte_combustivel = pygame.font.Font(FONTE_DEFAULT, 15)
-           
-
-def draw():
-    display.fill(MIDNIGHT_BLUE)
-   
-# Funcao para desenhar um retangulo segmentado
-def draw_segmented_rectangle(surface, color, x, y, width, height, segments, time_elapsed):
-    segment_width = width // segments
-    for i in range(segments):
-        if i < (time_elapsed // 10):
-            pygame.draw.rect(surface, MIDNIGHT_BLUE, (x + i * segment_width, y, segment_width, height), 0)
-        else:
-            pygame.draw.rect(surface, color, (x + i * segment_width, y, segment_width, height), 0)
-        pygame.draw.rect(surface, BRANCO, (x + i * segment_width, y, segment_width, height), 1)  # Desenha linha de contorno
-
-    # Desenha o texto "Combustivel" acima do retangulo
-    texto_combustivel = fonte_combustivel.render("Combustivel", True, BRANCO)
-    texto_combustivel_retangulo = texto_combustivel.get_rect(center=(x + width // 2, y - 25))
-    surface.blit(texto_combustivel, texto_combustivel_retangulo)
-
-#desenha relogio da contagem regressiva 
-def draw_circle(angulo):
-    draw()
-    centro = (SIZE_WINDOW_X // 2, SIZE_WINDOW_Y // 2)
-    raio = 50
-    largura_linha = 3
-    inicio_angulo = math.radians(0)
-    fim_angulo = math.radians(angulo)
-    pygame.draw.arc(display, BRANCO, (centro[0] - raio, centro[1] - raio, raio * 2, raio * 2), inicio_angulo, fim_angulo, largura_linha)
-
-#desenha contagem Regressiva
-def contagem_regressiva():
-    for i in range(10, 0, -1):
-        angulo = i * 36
-        draw()
-        draw_circle(angulo)
-        texto = fonte.render(str(i), True, (255, 255, 255))
-        texto_retangulo = texto.get_rect(center=(SIZE_WINDOW_X // 2, SIZE_WINDOW_Y // 2))
-        display.blit(texto, texto_retangulo)
-        pygame.display.flip()
-        draw()
-        pygame.time.wait(1000)  # Espera 1 segundo
-
-#desenha o menu inicial 
-def menu():
-    draw()
-    #desenha titulo do Jogo
-    titulo = title_font.render("SpaCIN Ship ", True, (255, 255, 255))
-    titulo_retangulo = titulo.get_rect(center=(SIZE_WINDOW_X // 2, 50))
-    display.blit(titulo, titulo_retangulo)
-    #desenha instrucao apra comecar o jogo 
-    texto = fonte.render("Pressione SPACE para Lancar", True, (255, 255, 255))
-    texto_retangulo = texto.get_rect(center=(SIZE_WINDOW_X // 2, SIZE_WINDOW_Y // 2))
-    display.blit(texto, texto_retangulo)
-    pygame.display.flip()
-    draw()
-
-
-#Clock para atualizacao de tela
+      
 def main():
+    
+    FPS = 60
+
     drawGroup = pygame.sprite.Group()
     rocket = Rocket(drawGroup)
     trash_group = pygame.sprite.Group()
+    display = setDisplay()
+    pygame.display.set_caption("Rocket Launch")
+    clock = pygame.time.Clock()
+
 
     gameloop = True
     gameStart = False
@@ -120,11 +50,12 @@ def main():
 
         if gameStart:
             draw()
+            update_stars()
+            draw_stars(display)
             drawGroup.update()
             drawGroup.draw(display)
-
             time_elapsed += 1 / 60 
-            draw_segmented_rectangle(display, BRANCO, SIZE_WINDOW_X - 200, 50, 180, 50, 18, time_elapsed)
+            draw_fuel(display, WHITE, SIZE_WINDOW_X - 200, 50, 180, 50, 18, time_elapsed)
 
             # Verificar se é hora de adicionar um novo lixo espacial
             current_time = pygame.time.get_ticks()
@@ -140,20 +71,20 @@ def main():
             for trash in trash_group:
                 trash.move_down(3, time_elapsed)
 
-            # Verificar colisão entre o foguete e o lixo espacial
-            if pygame.sprite.spritecollide(rocket, trash_group, False):
-                gameStart = False  # Encerra o jogo se houver colisão
-                gameOver = True
+                # Verificar colisão entre o foguete e o lixo espacial
+                if pygame.sprite.spritecollide(rocket, trash_group, False):
+                    gameStart = False  # Encerra o jogo se houver colisão
+                    gameOver = True
 
 
-            trash_group.update()
-            trash_group.draw(display)
+                trash_group.update()
+                trash_group.draw(display)
 
-            pygame.display.update()
+                pygame.display.update()
 
         if gameOver:
         
-            background = GameOver(display,FONTE_DEFAULT, MIDNIGHT_BLUE)
+            background = GameOver(display,"Fonts/GamegirlClassic.ttf",(25, 25, 112), "You Win")
           
             while notPressBotom:
                 notPressBotom = background.getReturnButton()

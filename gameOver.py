@@ -5,7 +5,7 @@ import pygame
 
 class GameOver(pygame.sprite.Sprite):
 
-    def __init__(self, display, font, color):
+    def __init__(self, display, font, color, info):
        
        #configurações iniciais
         self.display = display
@@ -14,7 +14,7 @@ class GameOver(pygame.sprite.Sprite):
         fonte_buttom = pygame.font.Font(font, 10)
 
         # setando mensagem (posição)
-        texto = fonte_texto.render("GaMe OvEr", True, (255, 255, 255))
+        texto = fonte_texto.render(info, True, (255, 255, 255))
         pos_texto = texto.get_rect(center=(420, 50))
         self.display.blit(texto, pos_texto)
 
