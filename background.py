@@ -7,7 +7,7 @@ from rocket import Rocket
 # Definições
 FONTE_DEFAULT = "Fonts/GamegirlClassic.ttf"
 WHITE = (255, 255, 255)
-MIDNIGHT_BLUE = (25, 25, 112)
+MIDNIGHT_BLUE = (0, 0, 0)
 NUM_STARS = 100
 # Tela
 SIZE_WINDOW_X = 840
