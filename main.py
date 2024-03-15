@@ -4,8 +4,9 @@ import random
 import sys
 
 from rocket import Rocket
-from background import Background
+#from background import Background
 from trash import LixoEspacial
+from gameOver import GameOver
 
 SIZE_WINDOW_X = 840
 SIZE_WINDOW_Y = 480
@@ -14,27 +15,19 @@ BRANCO = (255, 255, 255)
 MIDNIGHT_BLUE = (25, 25, 112)
 FPS = 60
 
-pygame.init()
+clock = pygame.time.Clock()
 
-#seta configuracoes iniciais da janela 
+pygame.init()
+ 
 display = pygame.display.set_mode([SIZE_WINDOW_X, SIZE_WINDOW_Y])
 pygame.display.set_caption("Rocket Launch")
-
-#crias classe de desenahveis da biblioteca
-drawGroup = pygame.sprite.Group()
-
-#cria foguete e adiciona ao grupo 
+drawGroup = pygame.sprite.Group() 
 rocket = Rocket(drawGroup)
-
-
-# Grupo para armazenar os lixos espaciais
 trash_group = pygame.sprite.Group()
-
-
-#Define Fontes 
 title_font = pygame.font.Font(FONTE_DEFAULT, 50)
 fonte = pygame.font.Font(FONTE_DEFAULT, 25)
 fonte_combustivel = pygame.font.Font(FONTE_DEFAULT, 15)
+           
 
 def draw():
     display.fill(MIDNIGHT_BLUE)
@@ -53,8 +46,6 @@ def draw_segmented_rectangle(surface, color, x, y, width, height, segments, time
     texto_combustivel = fonte_combustivel.render("Combustivel", True, BRANCO)
     texto_combustivel_retangulo = texto_combustivel.get_rect(center=(x + width // 2, y - 25))
     surface.blit(texto_combustivel, texto_combustivel_retangulo)
-
-
 
 #desenha relogio da contagem regressiva 
 def draw_circle(angulo):
@@ -95,60 +86,82 @@ def menu():
 
 
 #Clock para atualizacao de tela
-clock = pygame.time.Clock()
+def main():
+    drawGroup = pygame.sprite.Group()
+    rocket = Rocket(drawGroup)
+    trash_group = pygame.sprite.Group()
 
-#Flags de Controle
-gameloop = True
-gameStart = False
-time_elapsed = 0
+    gameloop = True
+    gameStart = False
+    time_elapsed = 0
+    show_game = True
+    loop = True
+    notPressBotom = True
+    gameOver = False
+
+    last_trash_time = 0  # Variável para rastrear o tempo desde a última geração de lixo espacial
+
+    #loop principal do jogo 
+    while gameloop:
+
+        clock.tick(FPS)
+        #time_elapsed = pygame.time.get_ticks() / 1000  # Tempo decorrido em segundos
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT and gameStart: ## se está no jogo e aperta em sair
+                gameloop = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and not gameStart: # se não está no jogo e pressiona space
+                    contagem_regressiva()
+                    gameStart = True
+            elif not gameStart: # Se não tem nada jogando e nenhum QUIT. Então mostra Menu
+                menu()
 
 
-last_trash_time = 0  # Variável para rastrear o tempo desde a última geração de lixo espacial
+        if gameStart:
+            draw()
+            drawGroup.update()
+            drawGroup.draw(display)
 
-#loop principal do jogo 
-while gameloop:
+            time_elapsed += 1 / 60 
+            draw_segmented_rectangle(display, BRANCO, SIZE_WINDOW_X - 200, 50, 180, 50, 18, time_elapsed)
 
-    clock.tick(FPS)
-    #time_elapsed = pygame.time.get_ticks() / 1000  # Tempo decorrido em segundos
+            # Verificar se é hora de adicionar um novo lixo espacial
+            current_time = pygame.time.get_ticks()
+            if current_time - last_trash_time > 2000:  # Adicionar um novo lixo espacial a cada 2 segundos
+                i = 0  # Contador para controlar a geração de lixo espacial
+                while i < random.randint(1, 5):
+                    trash = LixoEspacial(drawGroup, trash_group)
+                    trash_group.add(trash)
+                    last_trash_time = current_time
+                    i += 1
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-           gameloop = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and not gameStart:
-                contagem_regressiva()
-                gameStart = True
-        elif not gameStart:
-            menu()
+            # Movimento dos lixos espaciais
+            for trash in trash_group:
+                trash.move_down(3, time_elapsed)
+
+            # Verificar colisão entre o foguete e o lixo espacial
+            if pygame.sprite.spritecollide(rocket, trash_group, False):
+                gameStart = False  # Encerra o jogo se houver colisão
+                gameOver = True
 
 
-    if gameStart:
-        draw()
-        drawGroup.update()
-        drawGroup.draw(display)
-        time_elapsed += 1 / 60 
-        draw_segmented_rectangle(display, BRANCO, SIZE_WINDOW_X - 200, 50, 180, 50, 18, time_elapsed)
+            trash_group.update()
+            trash_group.draw(display)
 
-        # Verificar se é hora de adicionar um novo lixo espacial
-        current_time = pygame.time.get_ticks()
-        if current_time - last_trash_time > 2000:  # Adicionar um novo lixo espacial a cada 2 segundos
-            i = 0  # Contador para controlar a geração de lixo espacial
-            while i < random.randint(1, 5):
-                trash = LixoEspacial(drawGroup, trash_group)
-                trash_group.add(trash)
-                last_trash_time = current_time
-                i += 1
+            pygame.display.update()
 
-        # Movimento dos lixos espaciais
-        for trash in trash_group:
-            trash.move_down(3, time_elapsed)
+        if gameOver:
+        
+            background = GameOver(display,FONTE_DEFAULT, MIDNIGHT_BLUE)
+          
+            while notPressBotom:
+                notPressBotom = background.getReturnButton()
+                pygame.display.update() 
 
-        # Verificar colisão entre o foguete e o lixo espacial
-        if pygame.sprite.spritecollide(rocket, trash_group, False):
-            gameloop = False  # Encerra o jogo se houver colisão
+        if not notPressBotom:
+            main()
 
-        trash_group.update()
-        trash_group.draw(display)
-
-        pygame.display.update()
-    
+if __name__ == "__main__": 
+    print("main init")
+    main()
