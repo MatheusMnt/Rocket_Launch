@@ -8,10 +8,13 @@ from rocket import Rocket
 from trash import LixoEspacial
 from gameOver import GameOver
 
-      
+FPS = 60
+gameOver = False
+
 def main():
     
-    FPS = 60
+    global gameOver
+    gameOver = False
 
     drawGroup = pygame.sprite.Group()
     rocket = Rocket(drawGroup)
@@ -27,7 +30,6 @@ def main():
     show_game = True
     loop = True
     notPressBotom = True
-    gameOver = False
 
     last_trash_time = 0  # Variável para rastrear o tempo desde a última geração de lixo espacial
 
@@ -38,7 +40,7 @@ def main():
         #time_elapsed = pygame.time.get_ticks() / 1000  # Tempo decorrido em segundos
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT and gameStart: ## se está no jogo e aperta em sair
+            if event.type == pygame.QUIT: ## se está no jogo e aperta em sair
                 gameloop = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and not gameStart: # se não está no jogo e pressiona space
@@ -94,5 +96,4 @@ def main():
             main()
 
 if __name__ == "__main__": 
-    print("main init")
     main()

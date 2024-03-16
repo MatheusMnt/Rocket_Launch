@@ -59,7 +59,7 @@ class Rocket(pygame.sprite.Sprite):
             self.state_foguete = 3          
         elif primeira_ocorrencia_True < 0 and self.state_foguete != 0:
             self.status = False
-            print("Foguete Explodiu!")       
+            gameOver = True
             
     def update(self, *args):
 
@@ -77,7 +77,7 @@ class Rocket(pygame.sprite.Sprite):
         elif (self.rect.x + self.rect.width) > 840:
             self.rect.x = 840 - self.rect.width
 
-        # interação switch
+        # interaï¿½ï¿½o switch
         # somente para testes, na versao final deve usar o vetor vindo do driver
         if keys[pygame.K_1]:
             self.switchs[0] = False
