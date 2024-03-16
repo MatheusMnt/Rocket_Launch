@@ -3,10 +3,11 @@ import pygame
 import random
 import sys
 
-from background import SIZE_WINDOW_X, WHITE, contagem_regressiva, draw, draw_fuel, draw_score, draw_stars, menu, update_stars, setDisplay
+from background import SIZE_WINDOW_X, WHITE, MIDNIGHT_BLUE , FONTE_DEFAULT, contagem_regressiva, draw, draw_fuel, draw_score, draw_stars, menu, update_stars, setDisplay
 from rocket import Rocket
 from trash import LixoEspacial
 from gameOver import GameOver
+from rocket_falling import Falling
 
 FPS = 60
 gameOver = False
@@ -22,7 +23,8 @@ def main():
     display = setDisplay()
     pygame.display.set_caption("Rocket Launch")
     clock = pygame.time.Clock()
-
+    falling = None ## inicia escondido
+    
 
     gameloop = True
     gameStart = False
@@ -30,7 +32,7 @@ def main():
     show_game = True
     loop = True
     notPressBotom = True
-
+    cache_level = 0
     last_trash_time = 0  # Variável para rastrear o tempo desde a última geração de lixo espacial
 
     #loop principal do jogo 
@@ -52,6 +54,19 @@ def main():
 
         if gameStart:
             draw()
+           
+            rckt =  rocket.level
+            print("SET FOGUETE RESULT", rocket.level, rckt[0], rckt[1], rckt[2], cache_level)
+            if cache_level !=rckt[0]:
+                print("sei não viu")
+                falling = Falling( rckt[0], [rckt[1],rckt[2]])
+                cache_level = rocket.level[0]
+
+            if falling:
+
+                falling.falling(1)
+                display.blit(falling.image, falling.rect) 
+
             update_stars()
             draw_stars(display)
             drawGroup.update()
@@ -86,7 +101,7 @@ def main():
 
         if gameOver:
         
-            background = GameOver(display,"Fonts/GamegirlClassic.ttf",(25, 25, 112), "You Win")
+            background = GameOver(display, FONTE_DEFAULT,  MIDNIGHT_BLUE, "You Win")
           
             while notPressBotom:
                 notPressBotom = background.getReturnButton()
