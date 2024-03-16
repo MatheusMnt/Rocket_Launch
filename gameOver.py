@@ -1,4 +1,5 @@
 
+from background import WHITE
 import pygame
 
 # pygame.quit() => termina a execução
@@ -26,8 +27,8 @@ class GameOver(pygame.sprite.Sprite):
         self.button_rect_out = pygame.Rect(400, 190, 150, 50)
 
         # cria o retângulo do botão e seta cor
-        pygame.draw.rect(self.button_surface, (0, 0, 0), (0, 0, 0, 0))
-        pygame.draw.rect(self.button_surface_out, (0, 0, 0), (0, 0, 0, 0))
+        pygame.draw.rect(self.button_surface, (255,255,255), (0, 0, 0, 0), 2)
+        pygame.draw.rect(self.button_surface_out, (255,255,255), (0, 0, 0, 0))
 
         #integra retangulo com a superfície
         self.display.blit(self.button_surface, self.button_rect)

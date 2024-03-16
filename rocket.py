@@ -1,5 +1,6 @@
 from typing import Any
 import pygame
+from rocket_falling import Falling
 
 NUM_SWITCH = 18
 NUM_SWITCH_STATE_1 = 0
@@ -8,6 +9,7 @@ NUM_SWITCH_STATE_3 = 2
 
 INITIAL_X = 370
 INITIAL_Y = 180
+
 
 class Rocket(pygame.sprite.Sprite):
 
@@ -22,13 +24,17 @@ class Rocket(pygame.sprite.Sprite):
         self.switchs = [True]*NUM_SWITCH
         self.state_foguete = 0
         self.status = True
+        self.level = [0,0,0]
 
 
     def set_foguete(self):
-        self.check_switch()      
+        self.check_switch()
+        width = 0
+        height = 0
+
         if self.state_foguete == 1:
             self.image = pygame.image.load("sprites/Rocket/Rocket1.png")
-            width, height = self.image.get_size()            
+            width, height = self.image.get_size()
         elif self.state_foguete == 2:
             self.image = pygame.image.load("sprites/Rocket/Rocket2.png")
             width, height = self.image.get_size()               
@@ -38,6 +44,8 @@ class Rocket(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, [width//2, height//2])
         self.rect.height = height//2
         self.rect.width = width // 2
+        self.level = [self.state_foguete , self.rect.x, self.rect.y + height//2]
+        #self.level = self.state_foguete
      
     
     def check_switch(self):
@@ -52,7 +60,7 @@ class Rocket(pygame.sprite.Sprite):
 
         #print(primeira_ocorrencia_True)       
         if primeira_ocorrencia_True == NUM_SWITCH_STATE_1:
-            self.state_foguete = 1           
+            self.state_foguete = 1          
         elif primeira_ocorrencia_True == NUM_SWITCH_STATE_2:
             self.state_foguete = 2         
         elif primeira_ocorrencia_True == NUM_SWITCH_STATE_3:
@@ -77,7 +85,7 @@ class Rocket(pygame.sprite.Sprite):
         elif (self.rect.x + self.rect.width) > 840:
             self.rect.x = 840 - self.rect.width
 
-        # interação switch
+        # interaï¿½ï¿½o switch
         # somente para testes, na versao final deve usar o vetor vindo do driver
         if keys[pygame.K_1]:
             self.switchs[0] = False
@@ -88,6 +96,7 @@ class Rocket(pygame.sprite.Sprite):
 
 
         if keys[pygame.K_BACKSPACE]:
+            print("OPA")
             self.set_foguete()
         
         
