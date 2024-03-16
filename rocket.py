@@ -23,7 +23,7 @@ class Rocket(pygame.sprite.Sprite):
         self.rect = pygame.Rect([INITIAL_X, INITIAL_Y, width//2, height//2])
         self.switchs = [True]*NUM_SWITCH
         self.state_foguete = 0
-        self.status = True
+        self.status = False
         self.level = [0,0,0]
 
 
@@ -41,11 +41,15 @@ class Rocket(pygame.sprite.Sprite):
         elif self.state_foguete == 3:
            self.image = pygame.image.load("sprites/Rocket/Rocket3.png")
            width, height = self.image.get_size()
+        else:
+            self.image = pygame.image.load("sprites/Rocket/Rocket_FULL.png")
+            width, height = self.image.get_size()
+
         self.image = pygame.transform.scale(self.image, [width//2, height//2])
         self.rect.height = height//2
         self.rect.width = width // 2
         self.level = [self.state_foguete , self.rect.x, self.rect.y + height//2]
-        #self.level = self.state_foguete
+        
      
     
     def check_switch(self):
@@ -65,8 +69,8 @@ class Rocket(pygame.sprite.Sprite):
             self.state_foguete = 2         
         elif primeira_ocorrencia_True == NUM_SWITCH_STATE_3:
             self.state_foguete = 3          
-        elif primeira_ocorrencia_True < 0 and self.state_foguete != 0:
-            self.status = False
+        else:
+            self.status = True
             print("Foguete Explodiu!")       
             
     def update(self, *args):
@@ -94,9 +98,7 @@ class Rocket(pygame.sprite.Sprite):
         elif keys[pygame.K_3]:
             self.switchs[2] = False
 
-
         if keys[pygame.K_BACKSPACE]:
-            print("OPA")
             self.set_foguete()
         
         

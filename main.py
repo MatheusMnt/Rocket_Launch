@@ -54,9 +54,7 @@ def main():
             draw()
            
             rckt =  rocket.level
-            print("SET FOGUETE RESULT", rocket.level, rckt[0], rckt[1], rckt[2], cache_level)
             if cache_level !=rckt[0]:
-                print("sei não viu")
                 falling = Falling( rckt[0], [rckt[1],rckt[2]])
                 cache_level = rocket.level[0]
 
@@ -87,19 +85,19 @@ def main():
                 trash.move_down(3, time_elapsed)
 
                 # Verificar colisão entre o foguete e o lixo espacial
-                if pygame.sprite.spritecollide(rocket, trash_group, False):
-                    gameStart = False  # Encerra o jogo se houver colisão
-                    gameOver = True
+            if pygame.sprite.spritecollide(rocket, trash_group, False) or rocket.status:
+                gameStart = False  # Encerra o jogo se houver colisão
+                gameOver = True
 
 
-                trash_group.update()
-                trash_group.draw(display)
+            trash_group.update()
+            trash_group.draw(display)
 
-                pygame.display.update()
+            pygame.display.update()
 
         if gameOver:
         
-            background = GameOver(display, FONTE_DEFAULT,  MIDNIGHT_BLUE, "You Win")
+            background = GameOver(display, FONTE_DEFAULT,  MIDNIGHT_BLUE, "Game Over")
           
             while notPressBotom:
                 notPressBotom = background.getReturnButton()
