@@ -94,7 +94,7 @@ def contagem_regressiva():
 # Função para desenhar a pontuação na tela
 # Função para desenhar a pontuação na tela
 def draw_score(surface, pontuacao, x, y):
-    texto_pontuacao = fonte_combustivel.render(f'Pontuação: {pontuacao:.2f}', True, WHITE)
+    texto_pontuacao = fonte_combustivel.render(f'Score: {pontuacao:.2f}', True, WHITE)
     texto_pontuacao_retangulo = texto_pontuacao.get_rect(center=(x, y))
     surface.blit(texto_pontuacao, texto_pontuacao_retangulo)
 
